@@ -1,9 +1,10 @@
 #[derive(Clone, Debug)]
 pub enum Token{ 
     // UNARY OPERATORS
-    NEGATE,  // !BOOL
+    NEGATE,     // !BOOL
     AND,        // BOOL & BOOL
     OR,         // BOOL | BOOL
+    XOR,        // BOOL ^ BOOL
 
     // BINARY OPERATORS
     ASSIGN,     // =

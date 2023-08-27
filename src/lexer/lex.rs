@@ -54,6 +54,7 @@ fn match_string(sub: &str) -> Token {
         r"!" => Token::NEGATE,
         r"&" => Token::AND,
         r"|" => Token::OR,
+        r"^" => Token::XOR,
 
         r"=" => Token::ASSIGN,
         r"+" => Token::PLUS,
