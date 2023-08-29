@@ -47,6 +47,5 @@ pub enum Token{
 
     // ERROR and EOF
     ERROR(String),
-    EOF
 }
 

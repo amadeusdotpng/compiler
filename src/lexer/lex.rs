@@ -16,17 +16,19 @@ impl Lexer {
             read_position: 1,
         }
     }
-
-    pub fn next_token(&mut self) -> Token {
+}
+impl Iterator for Lexer {
+    type Item = Token;
+    fn next(&mut self) -> Option<Token> {
         let mut curr_token = Token::ERROR(String::new());
 
         if self.read_position > self.input.len() {
-            return Token::EOF;
+            return None;
         }
 
         loop {
             if self.read_position > self.input.len() {
-                return curr_token;
+                return Some(curr_token);
             }
 
             let substring = &self.input[self.curr_position..self.read_position];
@@ -36,10 +38,10 @@ impl Lexer {
                 if let Token::ERROR(_) = curr_token {
                     self.read_position += 1;
                     self.curr_position = self.read_position-1;
-                    return temp_token;
+                    return Some(temp_token);
                 } else {
                     self.curr_position = self.read_position-1;
-                    return curr_token;
+                    return Some(curr_token);
                 }
             } else {
                 self.read_position += 1;

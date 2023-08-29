@@ -14,15 +14,9 @@ fn main() {
             Err(err) => { println!("{}: {}", &path, err); continue; }
         };
 
-        let mut lex = Lexer::new(input);
-        loop {
-            let tok = lex.next_token();
-            if let Token::EOF = tok {
-                println!("{:?}", tok);
-                break;
-            } else {
-                println!("{:?}", tok);
-            }
+        let mut lex = Lexer::new(input).peekable();
+        for tok in lex {
+            println!("{:?}", tok);
         }
     }
 }
