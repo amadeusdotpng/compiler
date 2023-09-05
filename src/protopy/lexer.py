@@ -1,8 +1,12 @@
 import re
-s = "while;this_is_an_identiferkdnfvkj;;1212;;"
-cs = ""
-c_tok = "TOKEN::ERROR"
+s = "while;identifier;1234;"
+# print(f"str length: {len(s)}")
+
+curr_pos = 0
+read_pos = 1
+
 tokens = []
+tok = "TOKEN::ERROR"
 
 def match_string(substring):
     if re.match(r"^while$", substring):
@@ -14,23 +18,28 @@ def match_string(substring):
     else:
         return "TOKEN::ERROR"
 
-while s:
-    cs, s = cs+s[0], s[1:] # drain
-    t_tok = match_string(cs) # get token
+while True:
+    t_tok = match_string(s[curr_pos:read_pos])
+#    print((t_tok, s[curr_pos:read_pos], curr_pos, read_pos))
+    if read_pos > len(s):
+        if s[curr_pos:read_pos-1]: 
+            tokens.append((s[curr_pos:read_pos-1], tok))
+        break
 
-    if t_tok == "TOKEN::ERROR":
-
-        if c_tok != "TOKEN::ERROR":
-            s = cs[-1]+s
-            tokens.append((cs[:-1], c_tok))
+    elif t_tok == "TOKEN::ERROR":
+        if tok == "TOKEN::ERROR":
+            tokens.append((s[curr_pos:read_pos], tok))
+            read_pos += 1
         else:
-            tokens.append((cs, c_tok))
-        c_tok = "TOKEN::ERROR"
-        cs = ""
+            tokens.append((s[curr_pos:read_pos-1], tok))
+
+        curr_pos = read_pos-1;
+        tok = "TOKEN::ERROR"
     else:
-        c_tok = t_tok
+        tok = t_tok
+        read_pos += 1
 
-if c_tok != "TOKEN::ERROR":
-    tokens.append((cs, c_tok))
 
-print(tokens)
+print()
+for pair in tokens:
+    print(pair)
