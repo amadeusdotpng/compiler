@@ -83,21 +83,27 @@ fn match_string(sub: &str) -> Token {
 
         r"int" => Token::INT,
         r"bool" => Token::BOOL,
-        r"while" => Token::WHILE,
+        r"str" => Token::STR,
+
         r"if" => Token::IF,
         r"else" => Token::ELSE,
-        r"return" => Token::RETURN,
+        r"while" => Token::WHILE,
+        r"for" => Token::FOR,
+        r"DEF" => Token::DEF,
+//        r"return" => Token::RETURN,
         _ => regex_match(sub),
     };
 }
 
 fn regex_match(sub: &str) -> Token {
     let re_whitespace = Regex::new(r"^\s+$").unwrap();
-    let re_number = Regex::new(r"^\d+$").unwrap();
     let re_identifier = Regex::new(r"^[a-zA-Z_]+$").unwrap();
+    let re_number = Regex::new(r"^\d+$").unwrap();
+    let re_string = Regex::new(r#"^"[a-zA-Z\d]+"$"#).unwrap();
     
     if re_whitespace.is_match(sub)      { Token::WHITESPACE(String::from(sub)) }
-    else if re_number.is_match(sub)     { Token::NUMBER(String::from(sub))     }
     else if re_identifier.is_match(sub) { Token::ID(String::from(sub))         }
+    else if re_number.is_match(sub)     { Token::NUMBER(String::from(sub))     }
+    else if re_string.is_match(sub) { Token::STRING(String::from(sub))       }
     else { Token::ERROR(String::from(sub)) }
 }

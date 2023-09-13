@@ -33,17 +33,24 @@ pub enum Token{
     COMMA,      // ,
 
     // KEYWORDS
+    // TYPES
     INT,
     BOOL,
-    WHILE,
+    STR,
+
+    // STATEMENTS
     IF,
     ELSE,
-    RETURN,
+    WHILE,
+    FOR,
+    DEF,
+//    RETURN,
 
     // STUFF
     WHITESPACE(String),
-    NUMBER(String),
     ID(String),
+    NUMBER(String),
+    STRING(String),
 
     // ERROR and EOF
     ERROR(String),
