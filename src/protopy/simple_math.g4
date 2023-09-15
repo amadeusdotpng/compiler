@@ -3,9 +3,12 @@
 add : mul + add | mul - add
     | mul
 
-mul : int * mul | int / mul
-    | (add) * mul | (add) /  mul
-	| (add)
+mul : exp * mul | exp / mul
+    | exp
+
+exp : int ^ exp
+    | (add) ^ exp
+    | (add)
     | int
 
 int : NUMBER
