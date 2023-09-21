@@ -1,26 +1,5 @@
 from lexer import Token, Lexer
-
-class PTNode:
-    def __init__(self, name):
-        self.name = name
-        self.children = []
-
-    def add_child(self, tok):
-        self.children.append(tok)
-
-    def __str__(self):
-        return self.tree_string(0)
-
-    def tree_string(self, level):
-        indent = level*"  "
-        res = f"{indent}{self.name}:["
-        for child in self.children:
-            if type(child) == Token:
-                res += f"\n{indent+'  '}{child}"
-            else:
-                res += f"\n{child.tree_string(level+1)}"
-        res += f"\n{indent}]"
-        return res
+from node import PTNode
 
 class Parser:
     def __init__(self, input: list):

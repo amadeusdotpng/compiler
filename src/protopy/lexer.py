@@ -1,5 +1,5 @@
 import re
-from enum import Enum, auto
+from enum import Enum
 
 class Token(Enum):
     ADD = "+"
@@ -20,11 +20,11 @@ class Lexer:
         self.curr_pos = 0
         self.read_pos = 1
 
-    def next_token(self) -> (str, str):
+    def next_token(self):
         tok = Token.ERROR
 
         if self.read_pos > len(self.input):
-            return ("", Token.EOF)
+            return (Token.EOF, "")
 
         while True:
             sub = self.input[self.curr_pos:self.read_pos]
@@ -44,6 +44,12 @@ class Lexer:
             else:
                 tok = t_tok
                 self.read_pos += 1
+
+    def peek_token(self):
+        last_pos = (self.curr_pos, self.read_pos)
+        res = self.next_token()
+        self.curr_pos, self.read_pos = last_pos
+        return res
     
     def match_string(self, sub: str) -> str:
         if re.match(r"^\+$", sub):
@@ -68,10 +74,10 @@ class Lexer:
             return Token.ERROR
 
     def __next__(self):
-        lexeme, token = self.next_token()
+        token, lexeme = self.next_token()
         if token == Token.EOF:
             raise StopIteration
-        return (lexeme, token)
+        return (token, lexeme)
 
 
     def __iter__(self):
