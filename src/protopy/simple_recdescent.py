@@ -114,15 +114,13 @@ class Parser:
         save = self.pointer
 
         return (   self.exp_0(save, node)
-                or self.exp_1(save, node)
-                or self.exp_2(save, node)
-                or self.int(save, node))
+                or self.exp_1(save, node))
 
     def exp_0(self, save, node):
         self.pointer = save
 
         local_node = PTNode("exp_0")
-        res =  (    self.int(save, local_node)
+        res =  (    self.atom(local_node)
                 and self.term(Token.EXP, local_node)
                 and self.exp(local_node))
 
@@ -135,50 +133,39 @@ class Parser:
         self.pointer = save
 
         local_node = PTNode("exp_1")
-        res =  (    self.term(Token.LPAREN, local_node)
-                and self.add(local_node)
-                and self.term(Token.RPAREN, local_node)
-                and self.term(Token.EXP, local_node)
-                and self.exp(local_node))
+        res =  self.atom(local_node)
 
         if res:
             node.add_child(local_node)
 
         return res
 
-    def exp_2(self, save, node):
+    def atom(self, node):
+        save = self.pointer
+
+        return (self.atom_0(save, node)
+                or self.atom_1(save, node))
+
+    def atom_0(self, save, node):
         self.pointer = save
 
-        local_node = PTNode("exp_2")
+        local_node = PTNode("atom_0")
         res =  (    self.term(Token.LPAREN, local_node)
                 and self.add(local_node)
                 and self.term(Token.RPAREN, local_node))
 
         if res:
             node.add_child(local_node)
-
         return res
 
-    def exp_3(self, save, node):
+
+    def atom_1(self, save, node):
         self.pointer = save
 
-        local_node = PTNode("exp_3")
-        res =  self.int(save, local_node)
-
+        local_node = PTNode("atom_1")
+        res = self.term(Token.NUMBER, local_node)
         if res:
             node.add_child(local_node)
-
-        return res
-
-    def int(self, save, node):
-        self.pointer = save
-
-        local_node = PTNode("int__")
-        res =  self.term(Token.NUMBER, local_node)
-
-        if res:
-            node.add_child(local_node)
-
         return res
 
 
