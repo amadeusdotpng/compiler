@@ -1,12 +1,9 @@
 from lexer import Token
 
 class PTNode:
-    def __init__(self, type):
+    def __init__(self, type, children):
         self.type = type
-        self.children = []
-
-    def add_child(self, tok):
-        self.children.append(tok)
+        self.children = children
 
     def __str__(self):
         return self.tree_string(0)
