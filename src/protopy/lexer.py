@@ -13,6 +13,7 @@ class Token(Enum):
     NUMBER = "NUMBER"
     EOF = "EOF"
     ERROR = "ERROR"
+    WHITESPACE = "WHITESPACE"
     
 class Lexer:
     def __init__(self, input: str):
@@ -29,8 +30,10 @@ class Lexer:
         while True:
             sub = self.input[self.curr_pos:self.read_pos]
             t_tok = self.match_string(sub)
-
+            
             if self.read_pos > len(self.input):
+                if tok == Token.WHITESPACE:
+                    return (Token.EOF, "")
                 return (tok, sub) 
             
             elif t_tok == Token.ERROR:
@@ -38,6 +41,9 @@ class Lexer:
                     self.read_pos += 1
                     self.curr_pos = self.read_pos-1
                     return (tok, sub)
+                elif tok == Token.WHITESPACE:   # skip whitespace
+                    self.curr_pos = self.read_pos-1
+                    continue
                 else:
                     self.curr_pos = self.read_pos-1
                     return (tok, sub[:-1])
@@ -52,24 +58,26 @@ class Lexer:
         return res
     
     def match_string(self, sub: str) -> str:
-        if re.match(r"^\+$", sub):
+        if re.match(r"^\+\Z", sub):
             return Token.ADD
-        elif re.match(r"^\-$", sub):
+        elif re.match(r"^\-\Z", sub):
             return Token.SUB
-        elif re.match(r"^%$", sub):
+        elif re.match(r"^%\Z", sub):
             return Token.MOD
-        elif re.match(r"^\*$", sub):
+        elif re.match(r"^\*\Z", sub):
             return Token.MUL
-        elif re.match(r"^/$", sub):
+        elif re.match(r"^/\Z", sub):
             return Token.DIV
-        elif re.match(r"^\^$", sub):
+        elif re.match(r"^\^\Z", sub):
             return Token.EXP
-        elif re.match(r"^\($", sub):
+        elif re.match(r"^\(\Z", sub):
             return Token.LPAREN
-        elif re.match(r"^\)$", sub):
+        elif re.match(r"^\)\Z", sub):
             return Token.RPAREN
-        elif re.match(r"^[0-9]+$", sub):
+        elif re.match(r"^[0-9]+\Z", sub):
             return Token.NUMBER
+        elif re.match(r"^\s+\Z", sub):
+            return Token.WHITESPACE
         else:
             return Token.ERROR
 

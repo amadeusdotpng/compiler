@@ -1,11 +1,27 @@
 add : mul + add | mul - add
-    | mul
+	| mul
 
 mul : exp * mul | exp / mul
-    | exp
+	| exp
 
 exp : atom ^ exp
-    | atom
+	| atom
+
+atom: (add)
+	| NUMBER
+
+# Make left recursive for left-associativity
+# Handle left recursion using loops
+# Exponents are right-associative so keep the same
+
+add : add + mul | add - mul
+	| mul
+
+mul : mul * exp | mul / exp
+	| exp
+
+exp : atom ^ exp
+	| atom
 
 atom: (add)
 	| NUMBER
