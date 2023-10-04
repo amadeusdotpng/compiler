@@ -14,6 +14,9 @@ atom: (add)
 # Handle left recursion using loops
 # Exponents are right-associative so keep the same
 
+parse
+	| add EOF
+
 add : add + mul | add - mul
 	| mul
 

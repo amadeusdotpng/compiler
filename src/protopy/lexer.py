@@ -21,6 +21,12 @@ class Lexer:
         self.curr_pos = 0
         self.read_pos = 1
 
+    def mark(self):
+        return (self.curr_pos, self.read_pos);
+
+    def reset(self, pos):
+        self.curr_pos, self.read_pos = pos;
+
     def next_token(self):
         tok = Token.ERROR
 

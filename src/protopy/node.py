@@ -9,16 +9,20 @@ class PTNode:
         return self.tree_string(0)
 
     def tree_string(self, level):
-        indent = level*"  "
+#        indent = level*"  "
+        indent = ""
         if type(self.type) == str:
             res = f"{indent}({self.type} "
         else:
             res = f"{indent}({self.type.name} "
         for child in self.children:
             if type(child) == Token:
-                res += f"\n{indent+'  '}{child.name}"
+#                res += f"\n{indent+'  '}{child.name}"
+                res += f"{indent+' '}{child.name} "
             else:
-                res += f"\n{child.tree_string(level+1)}"
-        res += f"\n{indent})"
+#                res += f"\n{child.tree_string(level+1)}"
+                res += f"{child.tree_string(level+1)}"
+#        res += f"\n{indent})"
+        res+= f"{indent})"
         return res
 
