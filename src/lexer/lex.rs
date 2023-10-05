@@ -53,12 +53,19 @@ impl Iterator for Lexer {
 
 fn match_string(sub: &str) -> Token {
     return match sub {
-        r"!" => Token::NEGATE,
-        r"&" => Token::AND,
-        r"|" => Token::OR,
-        r"^" => Token::XOR,
-
         r"=" => Token::ASSIGN,
+
+        r"!"  => Token::BOOL_NOT,
+        r"&&" => Token::BOOL_AND,
+        r"||" => Token::BOOL_OR,
+
+        r"~"  => Token::BIN_NOT,
+        r"&"  => Token::BIN_AND,
+        r"|"  => Token::BIN_OR,
+        r"^"  => Token::BIN_XOR,
+        r"<<" => Token::BIN_LEFT,
+        r">>" => Token::BIN_RIGHT,
+
         r"+" => Token::PLUS,
         r"-" => Token::MINUS,
         r"*" => Token::MULTIPLY,
@@ -66,9 +73,9 @@ fn match_string(sub: &str) -> Token {
 
         r"==" => Token::EQ,
         r"!=" => Token::NE,
-        r">" => Token::GT,
+        r">"  => Token::GT,
         r">=" => Token::GQ,
-        r"<" => Token::LT,
+        r"<"  => Token::LT,
         r"<=" => Token::LQ,
 
         r"(" => Token::LPAREN,

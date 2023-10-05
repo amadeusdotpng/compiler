@@ -1,13 +1,22 @@
 #[derive(Clone, Debug)]
+#[allow(non_camel_case_types)]
 pub enum Token{ 
-    // UNARY OPERATORS
-    NEGATE,     // !BOOL
-    AND,        // BOOL & BOOL
-    OR,         // BOOL | BOOL
-    XOR,        // BOOL ^ BOOL
+    ASSIGN,     // =
+
+    // BOOLEAN OPERATORS
+    BOOL_NOT,        // !BOOL
+    BOOL_AND,        // BOOL && BOOL
+    BOOL_OR,         // BOOL || BOOL
 
     // BINARY OPERATORS
-    ASSIGN,     // =
+    BIN_NOT,        // ~NUM
+    BIN_AND,        // NUM & NUM
+    BIN_OR,         // NUM | NUM
+    BIN_XOR,        // NUM ^ NUM
+    BIN_LEFT,       // NUM << NUM
+    BIN_RIGHT,      // NUM >> NUM
+
+    // ARITHMETIC OPERATORS
     PLUS,       // NUM + NUM
     MINUS,      // NUM - NUM
     MULTIPLY,   // NUM * NUM
