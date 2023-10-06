@@ -41,9 +41,11 @@ while_stmt:
 # ---------------
 logic_or:
 	| logic_or '||' logic_and
+	| logic_and
 
 logic_and:
 	| logic_and '&&' logic_not
+	| logic_not
 
 logic_not:
 	| 'not' logic_not
