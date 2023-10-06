@@ -1,26 +1,41 @@
-# still need to implement blocks
+block:
+	| '{' statements '}'
+	| '{' expression '}'
+	| '{' statements expression '}'
 
 statements:
 	| statements statement
 	| statement
 
 statement:
-	| simple_stmt
-	| compound_stmt
-
-simple_stmt:
-	| assignment SEMICOLON
-	| expression
-
-compound_stmt:
+	| assignment ';'
 	| if_stmt
-	| for_stmt
 	| while_stmt
 
 assignment:
-	| ID COLON type ASSIGN expression
+	| ID ':' type '=' expression
 
 expression: logic_or
+
+# If statements
+# -------------
+if_stmt:
+	| 'if' expression block elif_stmt
+	| 'if' expression block else_stmt
+	| 'if' expression block
+
+elif_stmt:
+	| 'elif' expression block elif_stmt
+	| 'elif' expression block else_stmt
+	| 'elif' expression block
+
+elif_stmt:
+	| 'else' expression block
+
+# While statement
+# ---------------
+while_stmt:
+	| 'while' expression block
 
 # Logic operators
 # ---------------
@@ -84,4 +99,6 @@ factor:
 atom:
 	| '(' expression ')'
 	| NUMBER
+	| 'true'
+	| 'false'
 	| ID
