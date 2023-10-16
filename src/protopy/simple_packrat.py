@@ -1,5 +1,5 @@
 from lexer import Token, Lexer
-from node import PTNode
+from node import PTNode, treeString
 
 class Parser:
     def __init__(self, lex: Lexer):
@@ -194,4 +194,4 @@ if __name__ == '__main__':
 
     print(f"STRING: {inp}")
     print(f"RESULT: {res}")
-    print(f"RESULT:\n{tree}\n")
+    print(f"TREE:\n{treeString(tree)}\n")

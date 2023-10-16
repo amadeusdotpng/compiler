@@ -1,4 +1,5 @@
 from lexer import Token
+from queue import LifoQueue
 
 class PTNode:
     def __init__(self, type, children):
@@ -6,23 +7,22 @@ class PTNode:
         self.children = children
 
     def __str__(self):
-        return self.tree_string(0)
+        return self.type
 
-    def tree_string(self, level):
-#        indent = level*"  "
-        indent = ""
-        if type(self.type) == str:
-            res = f"{indent}({self.type} "
-        else:
-            res = f"{indent}({self.type.name} "
-        for child in self.children:
-            if type(child) == Token:
-#                res += f"\n{indent+'  '}{child.name}"
-                res += f"{indent+' '}{child.name} "
-            else:
-#                res += f"\n{child.tree_string(level+1)}"
-                res += f"{child.tree_string(level+1)}"
-#        res += f"\n{indent})"
-        res+= f"{indent})"
-        return res
-
+def treeString(node):
+    res = ""
+    Q = LifoQueue()
+    Q.put((1, node))
+    prevL = 1
+    while not Q.empty():
+        L, v = Q.get()
+        if type(v) == PTNode:
+            res += f" ({v}"
+            for child in reversed(v.children):
+                Q.put((L+1, child))
+        elif type(v) == Token:
+            res += ")"*(prevL-L)
+            res += f" {v.name}"
+        prevL = L
+    res += ")"
+    return res
