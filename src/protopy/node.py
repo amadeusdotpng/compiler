@@ -16,12 +16,12 @@ def treeString(node):
     prevL = 1
     while not Q.empty():
         L, v = Q.get()
+        res += ")"*(prevL-L)
         if type(v) == PTNode:
             res += f" ({v}"
             for child in reversed(v.children):
                 Q.put((L+1, child))
         elif type(v) == Token:
-            res += ")"*(prevL-L)
             res += f" {v.name}"
         prevL = L
     res += ")"
