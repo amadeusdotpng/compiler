@@ -1,7 +1,13 @@
+prog: statements EOF
+
 block:
 	| '{' statements '}'
+	| block_expr
+
+block_expr:
 	| '{' expression '}'
 	| '{' statements expression '}'
+	
 
 statements:
 	| statements statement
@@ -11,11 +17,13 @@ statement:
 	| assignment ';'
 	| if_stmt
 	| while_stmt
+	| block
 
 assignment:
 	| ID ':' type '=' expression
 
-expression: logic_or
+expression:
+	| logic_or
 
 # If statements
 # -------------
@@ -100,6 +108,7 @@ factor:
 
 atom:
 	| '(' expression ')'
+	| block_expr
 	| NUMBER
 	| 'true'
 	| 'false'
