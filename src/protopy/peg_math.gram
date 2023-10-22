@@ -1,0 +1,11 @@
+parse
+	| add EOF
+
+add : mul (( + | - ) mul)*
+
+mul : exp (( * | / ) exp)*
+
+exp : atom (^ exp)?
+
+atom: (add)
+	| NUMBER
