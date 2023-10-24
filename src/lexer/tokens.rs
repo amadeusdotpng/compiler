@@ -1,6 +1,8 @@
-#[derive(Clone, Debug)]
+use crate::packrat_parser::node::{Node, NodeType};
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 #[allow(non_camel_case_types)]
-pub enum Token{ 
+pub enum TokenKind { 
     ASSIGN,     // =
 
     // BOOLEAN OPERATORS
@@ -56,12 +58,38 @@ pub enum Token{
 //    RETURN,
 
     // STUFF
-    WHITESPACE(String),
-    ID(String),
-    NUMBER(String),
-    STRING(String),
+    WHITESPACE,
+    ID,
+    NUMBER,
+    STRING,
 
     // ERROR and EOF
-    ERROR(String),
+    ERROR,
+    EOF,
 }
 
+#[derive(Clone, Debug, Eq, PartialEq, Hash)]
+pub struct Token {
+    pub kind: TokenKind,
+    pub lexeme: Option<String>,
+    pub position: (usize, usize),
+}
+
+impl Token {
+    pub fn new(kind: TokenKind, lexeme: Option<&str>, position: (usize, usize)) -> Token {
+        Token {
+            kind,
+            lexeme: match lexeme {
+                Some(str) => Some(str.into()),
+                None => None,
+            },
+            position,
+        }
+    }
+}
+
+impl Into<Node> for Token {
+    fn into(self) -> Node {
+        Node::new(NodeType::Atom(self), None)
+    }
+}

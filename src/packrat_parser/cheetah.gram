@@ -37,7 +37,7 @@ elif_stmt:
 	| 'elif' expression block else_stmt
 	| 'elif' expression block
 
-elif_stmt:
+else_stmt:
 	| 'else' expression block
 
 # While statement
@@ -104,11 +104,12 @@ factor:
 	| '+' factor
 	| '-' factor
 	| '~' factor
-	| atom
+	| primary
 
-atom:
+primary:
 	| '(' expression ')'
 	| block_expr
+	| atom
 	| NUMBER
 	| 'true'
 	| 'false'

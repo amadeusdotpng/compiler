@@ -1,6 +1,10 @@
 mod lexer;
-use lexer::{tokens::Token, lex::Lexer};
+mod packrat_parser;
+use lexer::lex::Lexer;
+use lexer::tokens::TokenKind;
+use packrat_parser::parser::PackratParser;
 use std::{fs, env};
+
 fn main() {
     let paths: Vec<String> = env::args().skip(1).collect();
 
@@ -14,9 +18,9 @@ fn main() {
             Err(err) => { println!("{}: {}", &path, err); continue; }
         };
 
-        let mut lex = Lexer::new(input).peekable();
-        for tok in lex {
-            println!("{:?}", tok);
-        }
+        let lex = Lexer::new(input);
+        let mut p = PackratParser::new(lex);
+        println!("{:?}", p.parse());
+
     }
 }
