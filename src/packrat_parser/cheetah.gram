@@ -19,12 +19,12 @@ statement:
 	| while_stmt
 	| block
 
-assignment:
-	| ID ':' type '=' expression
-
 expression:
 	| logic_or
 	| if_stmt
+
+assignment:
+	| ID ':' datatype '=' expression
 
 # If statements
 # -------------
@@ -57,7 +57,7 @@ logic_and:
 	| logic_not
 
 logic_not:
-	| 'not' logic_not
+	| '!' logic_not
 	| comparison
 
 # Comparison operators
@@ -111,9 +111,10 @@ primary:
 	| '(' expression ')'
 	| block_expr
 	| NUMBER
+	| STRING
+	| ID
 	| 'true'
 	| 'false'
-	| ID
 
 datatype:
 	| INT

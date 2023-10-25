@@ -34,11 +34,9 @@ impl Lexer {
         }
 
         loop {
-            /*
             if self.lookahead > self.input.len() {
                 return Token::new(token_buffer, Some(substring_buffer), self.mark())
             }
-            */
 
             let substring = &self.input[self.position..self.lookahead];
             let token = match_string(substring);
@@ -79,12 +77,12 @@ fn match_string(sub: &str) -> TokenKind {
         r"&&" => TokenKind::BOOL_AND,
         r"||" => TokenKind::BOOL_OR,
 
-        r"~"  => TokenKind::BIN_NOT,
-        r"&"  => TokenKind::BIN_AND,
-        r"|"  => TokenKind::BIN_OR,
-        r"^"  => TokenKind::BIN_XOR,
-        r"<<" => TokenKind::BIN_LEFT,
-        r">>" => TokenKind::BIN_RIGHT,
+        r"~"  => TokenKind::BIT_NOT,
+        r"&"  => TokenKind::BIT_AND,
+        r"|"  => TokenKind::BIT_OR,
+        r"^"  => TokenKind::BIT_XOR,
+        r"<<" => TokenKind::BIT_LEFT,
+        r">>" => TokenKind::BIT_RIGHT,
 
         r"+" => TokenKind::PLUS,
         r"-" => TokenKind::MINUS,
@@ -95,9 +93,9 @@ fn match_string(sub: &str) -> TokenKind {
         r"==" => TokenKind::EQ,
         r"!=" => TokenKind::NE,
         r">"  => TokenKind::GT,
-        r">=" => TokenKind::GQ,
+        r">=" => TokenKind::GE,
         r"<"  => TokenKind::LT,
-        r"<=" => TokenKind::LQ,
+        r"<=" => TokenKind::LE,
 
         r"(" => TokenKind::LPAREN,
         r")" => TokenKind::RPAREN,

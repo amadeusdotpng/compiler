@@ -10,13 +10,13 @@ pub enum TokenKind {
     BOOL_AND,        // BOOL && BOOL
     BOOL_OR,         // BOOL || BOOL
 
-    // BINARY OPERATORS
-    BIN_NOT,        // ~NUM
-    BIN_AND,        // NUM & NUM
-    BIN_OR,         // NUM | NUM
-    BIN_XOR,        // NUM ^ NUM
-    BIN_LEFT,       // NUM << NUM
-    BIN_RIGHT,      // NUM >> NUM
+    // BITWISE OPERATORS
+    BIT_NOT,        // ~NUM
+    BIT_AND,        // NUM & NUM
+    BIT_OR,         // NUM | NUM
+    BIT_XOR,        // NUM ^ NUM
+    BIT_LEFT,       // NUM << NUM
+    BIT_RIGHT,      // NUM >> NUM
 
     // ARITHMETIC OPERATORS
     PLUS,       // NUM + NUM
@@ -29,9 +29,9 @@ pub enum TokenKind {
     EQ,         // ==
     NE,         // !=
     GT,         // >
-    GQ,         // >=
+    GE,         // >=
     LT,         // <
-    LQ,         // <=
+    LE,         // <=
 
     // PUNCTUATION
     LPAREN,     // (
