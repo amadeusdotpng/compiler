@@ -23,6 +23,7 @@ pub enum TokenKind {
     MINUS,      // NUM - NUM
     MULTIPLY,   // NUM * NUM
     DIVIDE,     // NUM / NUM
+    MODULUS,    // NUM % NUM
 
     // COMPARISONS
     EQ,         // ==
@@ -51,10 +52,15 @@ pub enum TokenKind {
 
     // STATEMENTS
     IF,
+    ELIF,
     ELSE,
     WHILE,
     FOR,
     DEF,
+    
+    // BOOL
+    TRUE,
+    FALSE,
 //    RETURN,
 
     // STUFF

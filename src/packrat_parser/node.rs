@@ -31,6 +31,7 @@ pub enum NodeKind {
     Term,
     Factor,
     Primary,
+    DataType,
 }
 
 #[derive(Clone, Debug)]
@@ -45,6 +46,24 @@ impl Node {
         Node {
             kind,
             children
+        }
+    }
+}
+
+/* If NodeKind is left recursive */
+impl Into<bool> for NodeKind {
+    fn into(self) -> bool {
+        match self {
+            NodeKind::Statements |
+            NodeKind::LogicOr |
+            NodeKind::LogicAnd |
+            NodeKind::BitwiseOr |
+            NodeKind::BitwiseXor |
+            NodeKind::BitwiseAnd |
+            NodeKind::BitwiseShift |
+            NodeKind::Sum |
+            NodeKind::Term => true,
+            _ => false,
         }
     }
 }

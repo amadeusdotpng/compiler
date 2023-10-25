@@ -24,6 +24,7 @@ assignment:
 
 expression:
 	| logic_or
+	| if_stmt
 
 # If statements
 # -------------
@@ -109,8 +110,12 @@ factor:
 primary:
 	| '(' expression ')'
 	| block_expr
-	| atom
 	| NUMBER
 	| 'true'
 	| 'false'
 	| ID
+
+datatype:
+	| INT
+	| BOOL
+	| STR

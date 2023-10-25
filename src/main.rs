@@ -1,7 +1,6 @@
 mod lexer;
 mod packrat_parser;
 use lexer::lex::Lexer;
-use lexer::tokens::TokenKind;
 use packrat_parser::parser::PackratParser;
 use std::{fs, env};
 
@@ -20,7 +19,6 @@ fn main() {
 
         let lex = Lexer::new(input);
         let mut p = PackratParser::new(lex);
-        println!("{:?}", p.parse());
-
+            println!("{:?}", p.parse());
     }
 }

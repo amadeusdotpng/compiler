@@ -90,6 +90,7 @@ fn match_string(sub: &str) -> TokenKind {
         r"-" => TokenKind::MINUS,
         r"*" => TokenKind::MULTIPLY,
         r"/" => TokenKind::DIVIDE,
+        r"%" => TokenKind::MODULUS,
 
         r"==" => TokenKind::EQ,
         r"!=" => TokenKind::NE,
@@ -113,10 +114,15 @@ fn match_string(sub: &str) -> TokenKind {
         r"str" => TokenKind::STR,
 
         r"if" => TokenKind::IF,
+        r"elif" => TokenKind::ELIF,
         r"else" => TokenKind::ELSE,
         r"while" => TokenKind::WHILE,
         r"for" => TokenKind::FOR,
-        r"DEF" => TokenKind::DEF,
+        r"def" => TokenKind::DEF,
+
+        r"true" => TokenKind::TRUE,
+        r"false" => TokenKind::FALSE,
+
 //        r"return" => TokenKind::RETURN,
         _ => regex_match(sub),
     };
