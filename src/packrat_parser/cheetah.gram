@@ -39,7 +39,7 @@ elif_stmt:
 	| 'elif' expression block
 
 else_stmt:
-	| 'else' expression block
+	| 'else' block
 
 # While statement
 # ---------------

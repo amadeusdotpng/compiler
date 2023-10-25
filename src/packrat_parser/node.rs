@@ -265,7 +265,6 @@ fn else_stmt(parser: &mut PackratParser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::ElseStmt);
     let productions = [
         vec![Rules::Terminal(TokenKind::ELSE),
-             Rules::NonTerminal(NodeKind::Expression),
              Rules::NonTerminal(NodeKind::Block)],
     ];
     return parse_productions(parser, &productions, kind)
