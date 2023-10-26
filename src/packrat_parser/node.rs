@@ -129,6 +129,7 @@ fn parse_productions(
     for prod in productions {
         parser.reset(start);
         if let Some(mut children) = production(parser, &prod) {
+            if children.len() == 1 {return children.pop()} // Makes parse trees a lot smaller
             return Some(Node::new(kind, Some(children)));
         }
     }
