@@ -2,7 +2,7 @@ mod lexer;
 mod packrat_parser;
 use lexer::lex::Lexer;
 use packrat_parser::parser::PackratParser;
-use std::{fs, env};
+use std::{env, fs};
 
 fn main() {
     let paths: Vec<String> = env::args().skip(1).collect();
@@ -14,11 +14,19 @@ fn main() {
     for path in paths {
         let input = match fs::read_to_string(&path) {
             Ok(inp) => inp,
-            Err(err) => { println!("{}: {}", &path, err); continue; }
+            Err(err) => {
+                println!("{}: {}", &path, err);
+                continue;
+            }
         };
 
         let lex = Lexer::new(input);
-        let mut p = PackratParser::new(lex);
-            println!("{:?}", p.parse());
+        let mut parse = PackratParser::new(lex);
+        let tree = parse.parse();
+        if let Some(tree) = tree {
+            println!("{}", tree);
+        } else {
+            println!("None");
+        }
     }
 }

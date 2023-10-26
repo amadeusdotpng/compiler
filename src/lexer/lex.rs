@@ -9,7 +9,7 @@ pub struct Lexer {
 
 impl Lexer {
     pub fn new(s: String) -> Lexer {
-//        let vec_char: Vec<char> = s.chars().collect();
+        //        let vec_char: Vec<char> = s.chars().collect();
         Lexer {
             input: s,
             position: 0,
@@ -30,12 +30,12 @@ impl Lexer {
         let mut substring_buffer = "";
 
         if self.lookahead >= self.input.len() {
-            return Token::new(TokenKind::EOF, None, self.mark())
+            return Token::new(TokenKind::EOF, None, self.mark());
         }
 
         loop {
             if self.lookahead > self.input.len() {
-                return Token::new(token_buffer, Some(substring_buffer), self.mark())
+                return Token::new(token_buffer, Some(substring_buffer), self.mark());
             }
 
             let substring = &self.input[self.position..self.lookahead];
@@ -44,13 +44,12 @@ impl Lexer {
             if token == TokenKind::ERROR {
                 if token_buffer == TokenKind::ERROR {
                     self.lookahead += 1;
-                    self.position = self.lookahead-1;
+                    self.position = self.lookahead - 1;
                     return Token::new(token, Some(substring), self.mark());
-                }
-                else if token_buffer == TokenKind::WHITESPACE {
-                    self.position = self.lookahead-1;
+                } else if token_buffer == TokenKind::WHITESPACE {
+                    self.position = self.lookahead - 1;
                 } else {
-                    self.position = self.lookahead-1;
+                    self.position = self.lookahead - 1;
                     return Token::new(token_buffer, Some(substring_buffer), self.mark());
                 }
             } else {
@@ -73,14 +72,14 @@ fn match_string(sub: &str) -> TokenKind {
     return match sub {
         r"=" => TokenKind::ASSIGN,
 
-        r"!"  => TokenKind::BOOL_NOT,
+        r"!" => TokenKind::BOOL_NOT,
         r"&&" => TokenKind::BOOL_AND,
         r"||" => TokenKind::BOOL_OR,
 
-        r"~"  => TokenKind::BIT_NOT,
-        r"&"  => TokenKind::BIT_AND,
-        r"|"  => TokenKind::BIT_OR,
-        r"^"  => TokenKind::BIT_XOR,
+        r"~" => TokenKind::BIT_NOT,
+        r"&" => TokenKind::BIT_AND,
+        r"|" => TokenKind::BIT_OR,
+        r"^" => TokenKind::BIT_XOR,
         r"<<" => TokenKind::BIT_LEFT,
         r">>" => TokenKind::BIT_RIGHT,
 
@@ -92,9 +91,9 @@ fn match_string(sub: &str) -> TokenKind {
 
         r"==" => TokenKind::EQ,
         r"!=" => TokenKind::NE,
-        r">"  => TokenKind::GT,
+        r">" => TokenKind::GT,
         r">=" => TokenKind::GE,
-        r"<"  => TokenKind::LT,
+        r"<" => TokenKind::LT,
         r"<=" => TokenKind::LE,
 
         r"(" => TokenKind::LPAREN,
@@ -121,7 +120,7 @@ fn match_string(sub: &str) -> TokenKind {
         r"true" => TokenKind::TRUE,
         r"false" => TokenKind::FALSE,
 
-//        r"return" => TokenKind::RETURN,
+        //        r"return" => TokenKind::RETURN,
         _ => regex_match(sub),
     };
 }
@@ -131,10 +130,16 @@ fn regex_match(sub: &str) -> TokenKind {
     let re_identifier = Regex::new(r"^[a-zA-Z_]+$").unwrap();
     let re_number = Regex::new(r"^\d+$").unwrap();
     let re_string = Regex::new(r#"^"[a-zA-Z\d]+"$"#).unwrap();
-    
-    if re_whitespace.is_match(sub)      { TokenKind::WHITESPACE }
-    else if re_identifier.is_match(sub) { TokenKind::ID     }
-    else if re_number.is_match(sub)     { TokenKind::NUMBER }
-    else if re_string.is_match(sub)     { TokenKind::STRING }
-    else { TokenKind::ERROR }
+
+    if re_whitespace.is_match(sub) {
+        TokenKind::WHITESPACE
+    } else if re_identifier.is_match(sub) {
+        TokenKind::ID
+    } else if re_number.is_match(sub) {
+        TokenKind::NUMBER
+    } else if re_string.is_match(sub) {
+        TokenKind::STRING
+    } else {
+        TokenKind::ERROR
+    }
 }

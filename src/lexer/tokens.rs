@@ -1,48 +1,49 @@
 use crate::packrat_parser::node::{Node, NodeType};
+use std::fmt;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 #[allow(non_camel_case_types)]
-pub enum TokenKind { 
-    ASSIGN,     // =
+pub enum TokenKind {
+    ASSIGN, // =
 
     // BOOLEAN OPERATORS
-    BOOL_NOT,        // !BOOL
-    BOOL_AND,        // BOOL && BOOL
-    BOOL_OR,         // BOOL || BOOL
+    BOOL_NOT, // !BOOL
+    BOOL_AND, // BOOL && BOOL
+    BOOL_OR,  // BOOL || BOOL
 
     // BITWISE OPERATORS
-    BIT_NOT,        // ~NUM
-    BIT_AND,        // NUM & NUM
-    BIT_OR,         // NUM | NUM
-    BIT_XOR,        // NUM ^ NUM
-    BIT_LEFT,       // NUM << NUM
-    BIT_RIGHT,      // NUM >> NUM
+    BIT_NOT,   // ~NUM
+    BIT_AND,   // NUM & NUM
+    BIT_OR,    // NUM | NUM
+    BIT_XOR,   // NUM ^ NUM
+    BIT_LEFT,  // NUM << NUM
+    BIT_RIGHT, // NUM >> NUM
 
     // ARITHMETIC OPERATORS
-    PLUS,       // NUM + NUM
-    MINUS,      // NUM - NUM
-    MULTIPLY,   // NUM * NUM
-    DIVIDE,     // NUM / NUM
-    MODULUS,    // NUM % NUM
+    PLUS,     // NUM + NUM
+    MINUS,    // NUM - NUM
+    MULTIPLY, // NUM * NUM
+    DIVIDE,   // NUM / NUM
+    MODULUS,  // NUM % NUM
 
     // COMPARISONS
-    EQ,         // ==
-    NE,         // !=
-    GT,         // >
-    GE,         // >=
-    LT,         // <
-    LE,         // <=
+    EQ, // ==
+    NE, // !=
+    GT, // >
+    GE, // >=
+    LT, // <
+    LE, // <=
 
     // PUNCTUATION
-    LPAREN,     // (
-    RPAREN,     // )
-    LCURLY,     // {
-    RCURLY,     // }
-    LBRACE,     // [
-    RBRACE,     // ]
-    COLON,      // :
-    SEMICOLON,  // ;
-    COMMA,      // ,
+    LPAREN,    // (
+    RPAREN,    // )
+    LCURLY,    // {
+    RCURLY,    // }
+    LBRACE,    // [
+    RBRACE,    // ]
+    COLON,     // :
+    SEMICOLON, // ;
+    COMMA,     // ,
 
     // KEYWORDS
     // TYPES
@@ -57,11 +58,11 @@ pub enum TokenKind {
     WHILE,
     FOR,
     DEF,
-    
+
     // BOOL
     TRUE,
     FALSE,
-//    RETURN,
+    //    RETURN,
 
     // STUFF
     WHITESPACE,
@@ -97,5 +98,11 @@ impl Token {
 impl Into<Node> for Token {
     fn into(self) -> Node {
         Node::new(NodeType::Atom(self), None)
+    }
+}
+
+impl fmt::Display for Token {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self.kind)
     }
 }
