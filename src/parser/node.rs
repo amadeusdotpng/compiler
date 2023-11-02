@@ -45,6 +45,7 @@ pub enum NodeKind {
     BlockExpr,
     Statements,
     Statement,
+    Declaration,
     Assignment,
     Expression,
     IfStmt,
@@ -92,6 +93,7 @@ impl NodeKind {
             NodeKind::BlockExpr => parser.memoize(block_expr, self),
             NodeKind::Statements => parser.memoize(statements, self),
             NodeKind::Statement => parser.memoize(statement, self),
+            NodeKind::Declaration => parser.memoize(declaration, self),
             NodeKind::Assignment => parser.memoize(assignment, self),
             NodeKind::Expression => parser.memoize(expression, self),
             NodeKind::IfStmt => parser.memoize(if_stmt, self),
@@ -143,7 +145,7 @@ fn production(parser: &mut PackratParser, rules: &Vec<Rules>) -> Option<Vec<Node
         let child: Option<Node> = match rule {
             Rules::Terminal(kind) => {
                 if let Some(child) = parser.expect(*kind) {
-                    Some(child.into())
+                    Some(Node::new(NodeType::Atom(child), None))
                 } else {
                     None
                 }
@@ -235,12 +237,23 @@ fn expression(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
+fn declaration(parser: &mut PackratParser) -> Option<Node> {
+    let kind = NodeType::Cons(NodeKind::Declaration);
+    let productions = [vec![
+        Rules::Terminal(TokenKind::LET),
+        Rules::Terminal(TokenKind::ID),
+        Rules::Terminal(TokenKind::COLON),
+        Rules::NonTerminal(NodeKind::DataType),
+        Rules::Terminal(TokenKind::ASSIGN),
+        Rules::NonTerminal(NodeKind::Expression),
+    ]];
+    return parse_productions(parser, &productions, kind);
+}
+
 fn assignment(parser: &mut PackratParser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Assignment);
     let productions = [vec![
         Rules::Terminal(TokenKind::ID),
-        Rules::Terminal(TokenKind::COLON),
-        Rules::NonTerminal(NodeKind::DataType),
         Rules::Terminal(TokenKind::ASSIGN),
         Rules::NonTerminal(NodeKind::Expression),
     ]];

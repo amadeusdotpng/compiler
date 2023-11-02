@@ -1,4 +1,3 @@
-use crate::packrat_parser::node::{Node, NodeType};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
@@ -58,6 +57,7 @@ pub enum TokenKind {
     WHILE,
     FOR,
     DEF,
+    LET,
 
     // BOOL
     TRUE,
@@ -92,12 +92,6 @@ impl Token {
             },
             position,
         }
-    }
-}
-
-impl Into<Node> for Token {
-    fn into(self) -> Node {
-        Node::new(NodeType::Atom(self), None)
     }
 }
 

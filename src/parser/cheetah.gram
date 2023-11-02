@@ -14,6 +14,7 @@ statements:
 	| statement
 
 statement:
+	| declaration ';'
 	| assignment ';'
 	| if_stmt
 	| while_stmt
@@ -23,8 +24,11 @@ expression:
 	| logic_or
 	| if_stmt
 
+declaration
+	| 'let' ID ':' datatype '=' expression
+
 assignment:
-	| ID ':' datatype '=' expression
+	| ID '=' expression
 
 # If statements
 # -------------

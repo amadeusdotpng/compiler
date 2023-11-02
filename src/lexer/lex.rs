@@ -116,6 +116,7 @@ fn match_string(sub: &str) -> TokenKind {
         r"while" => TokenKind::WHILE,
         r"for" => TokenKind::FOR,
         r"def" => TokenKind::DEF,
+        r"let" => TokenKind::LET,
 
         r"true" => TokenKind::TRUE,
         r"false" => TokenKind::FALSE,
