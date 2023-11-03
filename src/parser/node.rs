@@ -1,6 +1,7 @@
-use super::parser::PackratParser;
+use super::parser::Parser;
 use crate::lexer::tokens::{Token, TokenKind};
 use std::fmt;
+use super::pratt::parse_expression;
 
 #[derive(Clone, Debug)]
 pub struct Node {
@@ -20,7 +21,16 @@ impl fmt::Display for Node {
                 write!(f, "({:?} {})", kind, children)
             },
             NodeType::Atom(kind) => {
-                write!(f, "{}", kind)
+                if let Some(children) = &self.children {
+                    let children = children
+                        .into_iter()
+                        .map(|child| child.to_string())
+                        .collect::<Vec<String>>()
+                        .join(" ");
+                    write!(f, "({} {})", kind, children)
+                } else {
+                    write!(f, "{}", kind)
+                }
             }
         }
     }
@@ -86,7 +96,7 @@ impl Into<bool> for NodeKind {
 }
 
 impl NodeKind {
-    pub fn parse(self, parser: &mut PackratParser) -> Option<Node> {
+    pub fn parse(self, parser: &mut Parser) -> Option<Node> {
         match self {
             NodeKind::Prog => parser.memoize(prog, self),
             NodeKind::Block => parser.memoize(block, self),
@@ -123,7 +133,7 @@ enum Rules {
 }
 
 fn parse_productions(
-    parser: &mut PackratParser,
+    parser: &mut Parser,
     productions: &[Vec<Rules>],
     kind: NodeType,
 ) -> Option<Node> {
@@ -139,7 +149,7 @@ fn parse_productions(
     return None;
 }
 
-fn production(parser: &mut PackratParser, rules: &Vec<Rules>) -> Option<Vec<Node>> {
+fn production(parser: &mut Parser, rules: &Vec<Rules>) -> Option<Vec<Node>> {
     let mut children: Vec<Node> = vec![];
     for rule in rules {
         let child: Option<Node> = match rule {
@@ -161,7 +171,7 @@ fn production(parser: &mut PackratParser, rules: &Vec<Rules>) -> Option<Vec<Node
     Some(children)
 }
 
-fn prog(parser: &mut PackratParser) -> Option<Node> {
+fn prog(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Prog);
     let productions = [vec![
         Rules::NonTerminal(NodeKind::Statements),
@@ -171,7 +181,7 @@ fn prog(parser: &mut PackratParser) -> Option<Node> {
 }
 
 /* Blocks, Statements, and Expressions */
-fn block(parser: &mut PackratParser) -> Option<Node> {
+fn block(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Block);
     let productions = [
         vec![
@@ -184,7 +194,7 @@ fn block(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn block_expr(parser: &mut PackratParser) -> Option<Node> {
+fn block_expr(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::BlockExpr);
     let productions = [
         vec![
@@ -202,7 +212,7 @@ fn block_expr(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn statements(parser: &mut PackratParser) -> Option<Node> {
+fn statements(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Statements);
     let productions = [
         vec![
@@ -214,9 +224,13 @@ fn statements(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn statement(parser: &mut PackratParser) -> Option<Node> {
+fn statement(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Statement);
     let productions = [
+        vec![
+            Rules::NonTerminal(NodeKind::Declaration),
+            Rules::Terminal(TokenKind::SEMICOLON),
+        ],
         vec![
             Rules::NonTerminal(NodeKind::Assignment),
             Rules::Terminal(TokenKind::SEMICOLON),
@@ -228,16 +242,20 @@ fn statement(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn expression(parser: &mut PackratParser) -> Option<Node> {
-    let kind = NodeType::Cons(NodeKind::Expression);
-    let productions = [
-        vec![Rules::NonTerminal(NodeKind::LogicOr)],
-        vec![Rules::NonTerminal(NodeKind::IfStmt)],
-    ];
-    return parse_productions(parser, &productions, kind);
+fn expression(parser: &mut Parser) -> Option<Node> {
+    if parser.pratt {
+        Some(parse_expression(parser))
+    } else {
+        let kind = NodeType::Cons(NodeKind::Expression);
+        let productions = [
+            vec![Rules::NonTerminal(NodeKind::LogicOr)],
+            vec![Rules::NonTerminal(NodeKind::IfStmt)],
+        ];
+        parse_productions(parser, &productions, kind)
+    }
 }
 
-fn declaration(parser: &mut PackratParser) -> Option<Node> {
+fn declaration(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Declaration);
     let productions = [vec![
         Rules::Terminal(TokenKind::LET),
@@ -250,7 +268,7 @@ fn declaration(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn assignment(parser: &mut PackratParser) -> Option<Node> {
+fn assignment(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Assignment);
     let productions = [vec![
         Rules::Terminal(TokenKind::ID),
@@ -261,7 +279,7 @@ fn assignment(parser: &mut PackratParser) -> Option<Node> {
 }
 
 /* If Statements */
-fn if_stmt(parser: &mut PackratParser) -> Option<Node> {
+fn if_stmt(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::IfStmt);
     let productions = [
         vec![
@@ -285,7 +303,7 @@ fn if_stmt(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn elif_stmt(parser: &mut PackratParser) -> Option<Node> {
+fn elif_stmt(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::ElifStmt);
     let productions = [
         vec![
@@ -309,7 +327,7 @@ fn elif_stmt(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn else_stmt(parser: &mut PackratParser) -> Option<Node> {
+fn else_stmt(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::ElseStmt);
     let productions = [vec![
         Rules::Terminal(TokenKind::ELSE),
@@ -319,7 +337,7 @@ fn else_stmt(parser: &mut PackratParser) -> Option<Node> {
 }
 
 /* While Statment */
-fn while_stmt(parser: &mut PackratParser) -> Option<Node> {
+fn while_stmt(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::WhileStmt);
     let productions = [vec![
         Rules::Terminal(TokenKind::WHILE),
@@ -330,7 +348,7 @@ fn while_stmt(parser: &mut PackratParser) -> Option<Node> {
 }
 
 /* Logic Operators */
-fn logic_or(parser: &mut PackratParser) -> Option<Node> {
+fn logic_or(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::LogicOr);
     let productions = [
         vec![
@@ -343,7 +361,7 @@ fn logic_or(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn logic_and(parser: &mut PackratParser) -> Option<Node> {
+fn logic_and(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::LogicAnd);
     let productions = [
         vec![
@@ -356,7 +374,7 @@ fn logic_and(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn logic_not(parser: &mut PackratParser) -> Option<Node> {
+fn logic_not(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::LogicNot);
     let productions = [
         vec![
@@ -368,7 +386,7 @@ fn logic_not(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 /* Comparison Operators */
-fn comparison(parser: &mut PackratParser) -> Option<Node> {
+fn comparison(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Comparison);
     let productions = [
         vec![
@@ -406,7 +424,7 @@ fn comparison(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 /* Bitwise Operators */
-fn bitwise_or(parser: &mut PackratParser) -> Option<Node> {
+fn bitwise_or(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::BitwiseOr);
     let productions = [
         vec![
@@ -419,7 +437,7 @@ fn bitwise_or(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn bitwise_xor(parser: &mut PackratParser) -> Option<Node> {
+fn bitwise_xor(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::BitwiseXor);
     let productions = [
         vec![
@@ -432,7 +450,7 @@ fn bitwise_xor(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn bitwise_and(parser: &mut PackratParser) -> Option<Node> {
+fn bitwise_and(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::BitwiseAnd);
     let productions = [
         vec![
@@ -445,7 +463,7 @@ fn bitwise_and(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn bitwise_shift(parser: &mut PackratParser) -> Option<Node> {
+fn bitwise_shift(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::BitwiseShift);
     let productions = [
         vec![
@@ -464,7 +482,7 @@ fn bitwise_shift(parser: &mut PackratParser) -> Option<Node> {
 }
 
 /* Arithmetic Operators */
-fn sum(parser: &mut PackratParser) -> Option<Node> {
+fn sum(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Sum);
     let productions = [
         vec![
@@ -482,7 +500,7 @@ fn sum(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn term(parser: &mut PackratParser) -> Option<Node> {
+fn term(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Term);
     let productions = [
         vec![
@@ -505,7 +523,7 @@ fn term(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn factor(parser: &mut PackratParser) -> Option<Node> {
+fn factor(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Factor);
     let productions = [
         vec![
@@ -526,7 +544,7 @@ fn factor(parser: &mut PackratParser) -> Option<Node> {
 }
 
 /* Atoms */
-fn primary(parser: &mut PackratParser) -> Option<Node> {
+fn primary(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Primary);
     let productions = [
         vec![
@@ -544,7 +562,7 @@ fn primary(parser: &mut PackratParser) -> Option<Node> {
     return parse_productions(parser, &productions, kind);
 }
 
-fn datatype(parser: &mut PackratParser) -> Option<Node> {
+fn datatype(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::DataType);
     let productions = [
         vec![Rules::Terminal(TokenKind::INT)],

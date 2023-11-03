@@ -5,15 +5,17 @@ use crate::lexer::{
 };
 use std::collections::HashMap;
 
-pub struct PackratParser {
-    lex: Lexer,
+pub struct Parser {
+    pub lex: Lexer,
+    pub pratt: bool,
     cache: HashMap<(NodeKind, (usize, usize)), (Option<Node>, (usize, usize))>,
 }
 
-impl PackratParser {
-    pub fn new(lex: Lexer) -> PackratParser {
-        PackratParser {
+impl Parser {
+    pub fn new(lex: Lexer) -> Parser {
+        Parser {
             lex,
+            pratt: false,
             cache: HashMap::new(),
         }
     }
@@ -36,7 +38,7 @@ impl PackratParser {
 
     pub fn memoize(
         &mut self,
-        f: fn(&mut PackratParser) -> Option<Node>,
+        f: fn(&mut Parser) -> Option<Node>,
         kind: NodeKind,
     ) -> Option<Node> {
         let start_position = self.mark();
@@ -72,7 +74,8 @@ impl PackratParser {
         }
     }
 
-    pub fn parse(&mut self) -> Option<Node> {
+    pub fn parse(&mut self, pratt: bool) -> Option<Node> {
+        self.pratt = pratt;
         NodeKind::Prog.parse(self)
     }
 }
