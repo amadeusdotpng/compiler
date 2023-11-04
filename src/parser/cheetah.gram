@@ -33,17 +33,11 @@ assignment:
 # If statements
 # -------------
 if_stmt:
-	| 'if' expression block elif_stmt
 	| 'if' expression block else_stmt
 	| 'if' expression block
 
-elif_stmt:
-	| 'elif' expression block elif_stmt
-	| 'elif' expression block else_stmt
-	| 'elif' expression block
-
 else_stmt:
-	| 'else' block
+	| 'else' expression
 
 # While statement
 # ---------------

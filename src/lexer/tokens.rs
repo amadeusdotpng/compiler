@@ -52,7 +52,6 @@ pub enum TokenKind {
 
     // STATEMENTS
     IF,
-    ELIF,
     ELSE,
     WHILE,
     FOR,

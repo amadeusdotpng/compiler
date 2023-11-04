@@ -59,7 +59,6 @@ pub enum NodeKind {
     Assignment,
     Expression,
     IfStmt,
-    ElifStmt,
     ElseStmt,
     WhileStmt,
     LogicOr,
@@ -107,7 +106,6 @@ impl NodeKind {
             NodeKind::Assignment => parser.memoize(assignment, self),
             NodeKind::Expression => parser.memoize(expression, self),
             NodeKind::IfStmt => parser.memoize(if_stmt, self),
-            NodeKind::ElifStmt => parser.memoize(elif_stmt, self),
             NodeKind::ElseStmt => parser.memoize(else_stmt, self),
             NodeKind::WhileStmt => parser.memoize(while_stmt, self),
             NodeKind::LogicOr => parser.memoize(logic_or, self),
@@ -286,40 +284,10 @@ fn if_stmt(parser: &mut Parser) -> Option<Node> {
             Rules::Terminal(TokenKind::IF),
             Rules::NonTerminal(NodeKind::Expression),
             Rules::NonTerminal(NodeKind::Block),
-            Rules::NonTerminal(NodeKind::ElifStmt),
-        ],
-        vec![
-            Rules::Terminal(TokenKind::IF),
-            Rules::NonTerminal(NodeKind::Expression),
-            Rules::NonTerminal(NodeKind::Block),
             Rules::NonTerminal(NodeKind::ElseStmt),
         ],
         vec![
             Rules::Terminal(TokenKind::IF),
-            Rules::NonTerminal(NodeKind::Expression),
-            Rules::NonTerminal(NodeKind::Block),
-        ],
-    ];
-    return parse_productions(parser, &productions, kind);
-}
-
-fn elif_stmt(parser: &mut Parser) -> Option<Node> {
-    let kind = NodeType::Cons(NodeKind::ElifStmt);
-    let productions = [
-        vec![
-            Rules::Terminal(TokenKind::ELIF),
-            Rules::NonTerminal(NodeKind::Expression),
-            Rules::NonTerminal(NodeKind::Block),
-            Rules::NonTerminal(NodeKind::ElifStmt),
-        ],
-        vec![
-            Rules::Terminal(TokenKind::ELIF),
-            Rules::NonTerminal(NodeKind::Expression),
-            Rules::NonTerminal(NodeKind::Block),
-            Rules::NonTerminal(NodeKind::ElseStmt),
-        ],
-        vec![
-            Rules::Terminal(TokenKind::ELIF),
             Rules::NonTerminal(NodeKind::Expression),
             Rules::NonTerminal(NodeKind::Block),
         ],
@@ -331,7 +299,7 @@ fn else_stmt(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::ElseStmt);
     let productions = [vec![
         Rules::Terminal(TokenKind::ELSE),
-        Rules::NonTerminal(NodeKind::Block),
+        Rules::NonTerminal(NodeKind::Expression),
     ]];
     return parse_productions(parser, &productions, kind);
 }

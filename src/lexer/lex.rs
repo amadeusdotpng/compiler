@@ -111,7 +111,6 @@ fn match_string(sub: &str) -> TokenKind {
         r"str" => TokenKind::STR,
 
         r"if" => TokenKind::IF,
-        r"elif" => TokenKind::ELIF,
         r"else" => TokenKind::ELSE,
         r"while" => TokenKind::WHILE,
         r"for" => TokenKind::FOR,
