@@ -8,6 +8,7 @@ pub fn parse_expression(parser: &mut Parser) -> Node {
 }
 
 fn expression(parser: &mut Parser, min_bp: u8) -> Node {
+    let start = parser.mark();
     let lhs = parser.lex.next();
     let mut lhs = match is_op(&lhs) {
         /* not an operator */
@@ -19,7 +20,15 @@ fn expression(parser: &mut Parser, min_bp: u8) -> Node {
                 let lhs = expression(parser, 0);
                 assert_eq!(parser.lex.next().kind, TokenKind::RPAREN);
                 lhs
-            }
+            },
+            TokenKind::LCURLY => {
+                parser.reset(start);
+                NodeKind::BlockExpr.parse(parser).unwrap()
+            },
+            TokenKind::IF => {
+                parser.reset(start);
+                NodeKind::IfStmt.parse(parser).unwrap()
+            },
             _ => {
                 let ((), r_bp) = prefix_bp(&lhs);
                 let rhs = expression(parser, r_bp);
@@ -57,7 +66,7 @@ fn prefix_bp(tok: &Token) -> ((), u8) {
         | TokenKind::BIT_NOT
         | TokenKind::MINUS => ((), 21),
 
-        t => panic!("bad token {:?}", t),
+        _ => panic!("bad token {:?}", tok),
     }
 }
 

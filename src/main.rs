@@ -28,6 +28,8 @@ fn main() {
         if let Some(tree) = tree {
             println!("pure packrat: {:?}", Instant::now()-now);
             println!("{}", tree);
+        } else {
+            println!("failure");
         }
 
         let lex = Lexer::new(input.clone());
@@ -37,6 +39,9 @@ fn main() {
         if let Some(tree) = tree {
             println!("with pratt: {:?}", Instant::now()-now);
             println!("{}", tree);
+        } else {
+            println!("failure");
         }
+        
     }
 }

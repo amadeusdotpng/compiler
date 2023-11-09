@@ -37,7 +37,8 @@ if_stmt:
 	| 'if' expression block
 
 else_stmt:
-	| 'else' expression
+	| 'else' block
+	| 'else' if_stmt
 
 # While statement
 # ---------------

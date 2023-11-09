@@ -197,12 +197,12 @@ fn block_expr(parser: &mut Parser) -> Option<Node> {
     let productions = [
         vec![
             Rules::Terminal(TokenKind::LCURLY),
+            Rules::NonTerminal(NodeKind::Statements),
             Rules::NonTerminal(NodeKind::Expression),
             Rules::Terminal(TokenKind::RCURLY),
         ],
         vec![
             Rules::Terminal(TokenKind::LCURLY),
-            Rules::NonTerminal(NodeKind::Statements),
             Rules::NonTerminal(NodeKind::Expression),
             Rules::Terminal(TokenKind::RCURLY),
         ],
@@ -297,10 +297,16 @@ fn if_stmt(parser: &mut Parser) -> Option<Node> {
 
 fn else_stmt(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::ElseStmt);
-    let productions = [vec![
-        Rules::Terminal(TokenKind::ELSE),
-        Rules::NonTerminal(NodeKind::Expression),
-    ]];
+    let productions = [
+        vec![
+            Rules::Terminal(TokenKind::ELSE),
+            Rules::NonTerminal(NodeKind::Block),
+        ],
+        vec![
+            Rules::Terminal(TokenKind::ELSE),
+            Rules::NonTerminal(NodeKind::IfStmt),
+        ]
+    ];
     return parse_productions(parser, &productions, kind);
 }
 
@@ -521,6 +527,7 @@ fn primary(parser: &mut Parser) -> Option<Node> {
             Rules::Terminal(TokenKind::RPAREN),
         ],
         vec![Rules::NonTerminal(NodeKind::BlockExpr)],
+        vec![Rules::NonTerminal(NodeKind::IfStmt)],
         vec![Rules::Terminal(TokenKind::NUMBER)],
         vec![Rules::Terminal(TokenKind::STRING)],
         vec![Rules::Terminal(TokenKind::ID)],
