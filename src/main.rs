@@ -14,7 +14,7 @@ fn main() {
 
     for path in paths {
         let input = match fs::read_to_string(&path) {
-            Ok(inp) => inp,
+            Ok(inp) => String::from(inp.trim_end()),
             Err(err) => {
                 println!("{}: {}", &path, err);
                 continue;

@@ -13,7 +13,7 @@ impl Lexer {
         Lexer {
             input: s,
             position: 0,
-            lookahead: 1,
+            lookahead: 0,
         }
     }
 
@@ -34,23 +34,25 @@ impl Lexer {
         }
 
         loop {
-            if self.lookahead > self.input.len() {
+            if self.lookahead >= self.input.len() {
                 return Token::new(token_buffer, Some(substring_buffer), self.mark());
             }
 
-            let substring = &self.input[self.position..self.lookahead];
+            let substring = &self.input[self.position..=self.lookahead];
             let token = match_string(substring);
 
             if token == TokenKind::ERROR {
                 if token_buffer == TokenKind::ERROR {
+                    let t = Token::new(token, Some(substring), self.mark());
                     self.lookahead += 1;
-                    self.position = self.lookahead - 1;
-                    return Token::new(token, Some(substring), self.mark());
+                    self.position = self.lookahead;
+                    return t
                 } else if token_buffer == TokenKind::WHITESPACE {
-                    self.position = self.lookahead - 1;
+                    self.position = self.lookahead;
                 } else {
-                    self.position = self.lookahead - 1;
-                    return Token::new(token_buffer, Some(substring_buffer), self.mark());
+                    let t = Token::new(token_buffer, Some(substring_buffer), self.mark());
+                    self.position = self.lookahead;
+                    return t
                 }
             } else {
                 self.lookahead += 1;
