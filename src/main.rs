@@ -46,7 +46,7 @@ fn main() {
 }
 
 #[test]
-fn benchmark_pure_packrat() {
+fn benchmark() {
     use std::time::Duration;
     let mut n = 1;
     println!("Pure Packrat\nNumber of Lines,Time to Parse");
@@ -64,12 +64,8 @@ fn benchmark_pure_packrat() {
         }
         n *= 2;
     }
-}
 
-#[test]
-fn benchmark_pratt() {
-    use std::time::Duration;
-    let mut n = 1;
+    n = 1;
     println!("Pratt\nNumber of Lines,Time to Parse");
     loop {
         let input = "let a: bool = !((~(1 + 1) ^ ((1 * 1 + 1 / 1 ) >> 3)) == ((8 & 4 / (16 | 16)) & 255)) && ~((8*8)>>8) > 256 * ((8 + 8)>>12) + 64;";
@@ -86,3 +82,5 @@ fn benchmark_pratt() {
         n *= 2;
     }
 }
+
+
