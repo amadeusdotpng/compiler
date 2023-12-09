@@ -10,7 +10,7 @@ block_expr:
 	
 
 statements:
-	| statements statement
+	| statement statements
 	| statement
 
 statement:

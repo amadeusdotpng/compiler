@@ -214,8 +214,8 @@ fn statements(parser: &mut Parser) -> Option<Node> {
     let kind = NodeType::Cons(NodeKind::Statements);
     let productions = [
         vec![
-            Rules::NonTerminal(NodeKind::Statements),
             Rules::NonTerminal(NodeKind::Statement),
+            Rules::NonTerminal(NodeKind::Statements),
         ],
         vec![Rules::NonTerminal(NodeKind::Statement)],
     ];
